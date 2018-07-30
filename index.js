@@ -160,11 +160,6 @@ app.get('/shopify/callback', async (req, res) => {
     
 });
 
-//Firebase
-app.get('/getResults', async (req, res) => {
-  var result_array = await getFB();
-  res.send(result_array)
-});
 
 //Firebase
 app.get('/getData', async (req, res) => {
@@ -172,13 +167,6 @@ app.get('/getData', async (req, res) => {
   res.send(result_array)
 });
 
-//shopify posts results to firebase cloudstore
-app.post('/postResults', cors(), function(req, res){
-    addFB(req.body.variantID,req.body.ETA);//adds to database
-    console.log(req.body.ETA);
-    console.log(req.body.variantID);
-  res.send(req.body.ETA)
-});
 
 //shopify posts results to firebase cloudstore
 app.post('/postData', cors(), function(req, res){
@@ -254,7 +242,7 @@ function addVariant(pID,ETA,vID,inventory){
 
 
 
-async function getOutOfStock(){
+async function getDatabase(){
     var result_array = new Array();
     var vRef = db.collection('Vessel');  //collection name
     var allproducts = await vRef.get();//asynch
@@ -270,5 +258,25 @@ async function getOutOfStock(){
     return result_array;
 }
 
+//function for processing and returning which variant id's are out of stock 
+async function getOutOfStock(){
+    var result_array = new Array();
+    var vRef = db.collection('Vessel');  //collection name
+    var allproducts = await vRef.get();//asynch
+    for(index of allproducts.docs){
+        for(vIndex = 0; vIndex< index.data().qty.length;vIndex++){
+            if(index.data().qty[vIndex] < 1){//checks if product is out of stock
+            var obj = {//object that will be inside the array
+                pid: index.id,
+                vid: index.data().vid[vIndex],
+                msg: index.data().msg,
+                qty: index.data().qty[vIndex],
+                };
+                result_array.push(obj);
+            }
+        }
+    } 
+    return result_array;
+}
 
 
