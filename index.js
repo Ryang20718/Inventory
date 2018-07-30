@@ -166,6 +166,12 @@ app.get('/getResults', async (req, res) => {
   res.send(result_array)
 });
 
+//Firebase
+app.get('/getData', async (req, res) => {
+  var result_array = await getOutOfStock();
+  res.send(result_array)
+});
+
 //shopify posts results to firebase cloudstore
 app.post('/postResults', cors(), function(req, res){
     addFB(req.body.variantID,req.body.ETA);//adds to database
@@ -202,38 +208,6 @@ const db = admin.firestore();
 
 //Functions for Firebase
 
-function addFB(variantID,ETA){//handles strings separated with *
-    var vRef = db.collection('Vessel');  //collection name
-    var v_array = variantID.split("*"); //splits based on SHOPIFY for each product
-    var ETA_array = ETA.split("*"); //splits ETA dates based on shopify for each product added
-    var product_array = [];
-    for(var i = 0; i < v_array.length; i++){
-        var obj = {//object that will be inside the array
-        id: v_array[i],
-        msg: ETA_array[i],
-        };
-         vRef.doc(v_array[i]).set(obj);
-        product_array.push(obj);
-    }
-    //product_array contains an array of the objects
-    console.log(product_array);  
-    return product_array;
-}
-
-async function getFB(){
-    var result_array = new Array();
-    var vRef = db.collection('Vessel');  //collection name
-    var allproducts = await vRef.get();//asynch
-    for(index of allproducts.docs){
-        var obj = {//object that will be inside the array
-            id: index.id,
-            msg: index.data().msg,
-        };
-        result_array.push(obj);
-    }  
-    console.log(result_array);
-    return result_array;
-}
 function addVariant(pID,ETA,vID,inventory){
     
   Array.prototype.clean = function(deleteValue) {
@@ -279,19 +253,22 @@ function addVariant(pID,ETA,vID,inventory){
 }
 
 
-async function getFilterID(){
+
+async function getOutOfStock(){
     var result_array = new Array();
     var vRef = db.collection('Vessel');  //collection name
     var allproducts = await vRef.get();//asynch
     for(index of allproducts.docs){
         var obj = {//object that will be inside the array
-            id: index.id,
+            pid: index.id,
+            vid: index.data().vid,
+            msg: index.data().msg,
+            qty: index.data().qty,
         };
         result_array.push(obj);
-    }  
-    console.log(result_array);
+    } 
     return result_array;
 }
-getFilterID();
+
 
 
