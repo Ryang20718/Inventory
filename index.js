@@ -164,6 +164,7 @@ app.get('/shopify/callback', async (req, res) => {
 //Firebase
 app.get('/getData', async (req, res) => {
   var result_array = await getOutOfStock();
+  res.send(result_array)
 });
 
 
