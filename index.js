@@ -171,7 +171,7 @@ app.get('/getData', async (req, res) => {
 //shopify posts results to firebase cloudstore
 app.post('/postData', cors(), function(req, res){
     addVariant(req.body.pID,req.body.ETA,req.body.vID,req.body.inventory);// add to database
-  res.send(req.body.ETA)
+  
 });
 ///////////// Start the Server /////////////
 
