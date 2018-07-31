@@ -207,7 +207,7 @@ function addVariant(pID,ETA,vID,inventory){
   }
   return this;
   };
-    var vRef = db.collection('Vessel');  //collection name
+    var vRef = db.collection('Vessel2');  //collection name
     var pID_array = pID.split("*"); //splits based on SHOPIFY for each product
     var ETA_array = ETA.split("*"); //splits ETA dates based on shopify for each product added
     var vID_array = vID.split("|"); //split so each product has an array of variant ids
@@ -236,7 +236,7 @@ function addVariant(pID,ETA,vID,inventory){
             msg: ETA_array[i],
             qty: final_inventory[i],
         };
-    var setDoc = db.collection('Vessel').doc(pID_array[i]).set(obj);
+    var setDoc = db.collection('Vessel2').doc(pID_array[i]).set(obj);
     }
 }
 
@@ -244,7 +244,7 @@ function addVariant(pID,ETA,vID,inventory){
 
 async function getDatabase(){
     var result_array = new Array();
-    var vRef = db.collection('Vessel');  //collection name
+    var vRef = db.collection('Vessel2');  //collection name
     var allproducts = await vRef.get();//asynch
     for(index of allproducts.docs){
         var obj = {//object that will be inside the array
@@ -261,7 +261,7 @@ async function getDatabase(){
 //function for processing and returning which variant id's are out of stock 
 async function getOutOfStock(){
     var result_array = new Array();
-    var vRef = db.collection('Vessel');  //collection name
+    var vRef = db.collection('Vessel2');  //collection name
     var allproducts = await vRef.get();//asynch
     for(index of allproducts.docs){
         for(vIndex = 0; vIndex< index.data().qty.length;vIndex++){
@@ -278,5 +278,3 @@ async function getOutOfStock(){
     } 
     return result_array;
 }
-
-
