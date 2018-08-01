@@ -17,7 +17,7 @@ const app = express();
 const shopifyApiPublicKey = process.env.SHOPIFY_API_PUBLIC_KEY;
 const shopifyApiSecretKey = process.env.SHOPIFY_API_SECRET_KEY;
 const scopes = 'write_products';
-const appUrl = 'https://88eab409.ngrok.io';
+const appUrl = 'https://50aec6e3.ngrok.io';
 
 //body parser
 app.use(bodyParser.urlencoded({ extended: false })) 
@@ -174,6 +174,12 @@ app.post('/postData', cors(), function(req, res){
     addVariant(req.body.pID,req.body.ETA,req.body.vID,req.body.inventory);// add to database
   res.send("Database updated successfully")
 });
+
+//shopify cleans results to firebase cloudstore
+app.post('/clean', cors(), function(req, res){
+    removeProducts();// add to database
+  res.send("Database updated successfully")
+});
 ///////////// Start the Server /////////////
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
@@ -287,5 +293,6 @@ async function removeProducts(){//completely wipes out out all of the data for a
         var deleteDoc = vRef.doc(index.id).delete();
     }     
 }
+
 
 
