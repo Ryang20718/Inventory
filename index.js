@@ -12,6 +12,7 @@ var bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 
 
+const fireStoreCollection = 'Vessel2';
 const app = express();
 const shopifyApiPublicKey = process.env.SHOPIFY_API_PUBLIC_KEY;
 const shopifyApiSecretKey = process.env.SHOPIFY_API_SECRET_KEY;
@@ -207,7 +208,7 @@ function addVariant(pID,ETA,vID,inventory){
   }
   return this;
   };
-    var vRef = db.collection('Vessel2');  //collection name
+    var vRef = db.collection(fireStoreCollection);  //collection name
     var pID_array = pID.split("*"); //splits based on SHOPIFY for each product
     var ETA_array = ETA.split("*"); //splits ETA dates based on shopify for each product added
     var vID_array = vID.split("|"); //split so each product has an array of variant ids
@@ -236,7 +237,7 @@ function addVariant(pID,ETA,vID,inventory){
             msg: ETA_array[i],
             qty: final_inventory[i],
         };
-    var setDoc = db.collection('Vessel2').doc(pID_array[i]).set(obj);
+    var setDoc = db.collection(fireStoreCollection).doc(pID_array[i]).set(obj);
     }
 }
 
@@ -244,7 +245,7 @@ function addVariant(pID,ETA,vID,inventory){
 
 async function getDatabase(){
     var result_array = new Array();
-    var vRef = db.collection('Vessel2');  //collection name
+    var vRef = db.collection(fireStoreCollection);  //collection name
     var allproducts = await vRef.get();//asynch
     for(index of allproducts.docs){
         var obj = {//object that will be inside the array
@@ -261,7 +262,7 @@ async function getDatabase(){
 //function for processing and returning which variant id's are out of stock 
 async function getOutOfStock(){
     var result_array = new Array();
-    var vRef = db.collection('Vessel2');  //collection name
+    var vRef = db.collection(fireStoreCollection);  //collection name
     var allproducts = await vRef.get();//asynch
     for(index of allproducts.docs){
         for(vIndex = 0; vIndex< index.data().qty.length;vIndex++){
@@ -278,3 +279,13 @@ async function getOutOfStock(){
     } 
     return result_array;
 }
+
+async function removeProducts(){//completely wipes out out all of the data for a hard pre-order reset
+    var vRef = db.collection('cities');  //collection name
+    var allproducts = await vRef.get();//asynch
+    for(index of allproducts.docs){
+        var deleteDoc = vRef.doc(index.id).delete();
+    }     
+}
+
+
