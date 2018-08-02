@@ -295,4 +295,3 @@ async function removeProducts(){//completely wipes out out all of the data for a
 }
 
 
-
