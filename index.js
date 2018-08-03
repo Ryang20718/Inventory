@@ -158,6 +158,11 @@ app.post('/cleanSheets', cors(), function(req, res){//shows all customers email 
     res.send("Customers Cleaned");
 });
 
+//shopify cleans results to firebase cloudstore
+app.post('/updateSpreadSheet', cors(), function(req, res){
+    authorize(content,appendData);
+  res.send("PreOrder SpreadSheet updated successfully")
+});
 
 ///////////// Start the Server /////////////
 
@@ -346,7 +351,7 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
             vid: doc.data().vid,
             notified: "true",
             }
-            //pRef.doc(doc.data().vid).set(updatedData); //updates customers to notified
+            pRef.doc(doc.data().vid).set(updatedData); //updates customers to notified
             preOrderArray.push(data);
         }else{//customer has been updated to mailchimp
             console.log("customers have been updated to mailchimp already");
@@ -491,10 +496,10 @@ for(var i = 0; i < array.length; i++){
         tempValue.push([emailArray[ind][ind2], pURLArray[ind], variantIDArray[ind]]);
         }
   }
-  sheets.spreadsheets.values.append({
+  sheets.spreadsheets.values.update({
     auth: auth,
     spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
-    range: 'Sheet1', //Change Sheet1 if your worksheet's name is something else
+    range: 'A2', //Change Sheet1 if your worksheet's name is something else
     valueInputOption: "USER_ENTERED",
     resource: {
      values: tempValue
@@ -510,6 +515,7 @@ for(var i = 0; i < array.length; i++){
   
   
 }
+
 
 
 
