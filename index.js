@@ -397,28 +397,8 @@ function listMajors(auth) {
   });
 }
 
-function writeFromDataBase(auth){
-    const sheets = google.sheets({version: 'v4', auth});
-    var values = [
-  [
-    // Cell values ...
-  ]
-  // Additional rows ...
-  ];
-var valueRange = Sheets.newRowData();
-valueRange.values = values;
 
-var appendRequest = Sheets.newAppendCellsRequest();
-appendRequest.sheetId = '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk'; //vessel spreadID
-appendRequest.rows = [Sheet1];
-
-var result = Sheets.Spreadsheets.Values.append(valueRange, spreadsheetId, range, {
-  valueInputOption: valueInputOption
-});
-    
-}
-
-
+//Writes to SpreadSheet
 function appendData(auth) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.values.append({
@@ -439,4 +419,3 @@ function appendData(auth) {
   });
 }
 
-authorize((content), appendData);
