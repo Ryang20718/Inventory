@@ -80,58 +80,7 @@ app.get('/shopify', (req, res) => {
   res.cookie('state', state) // should be encrypted in production
   res.redirect(installShopUrl);
 });
-/*
-//shopify verification
-app.get('/shopify/callback', (req,res) => {
-    const {shop,hmac,code,state} = req.query;
-    const stateCookie = cookie.parse(req.headers.cookie).state;
-    
-    if(state !== stateCookie){
-        return res.status(403).send('Request origin cannot be verified');
-    }
-    if(shop && hmac && code){
-        const map = Object.assign({},req.query);
-        delete map['hmac'];
-        const message = querystring.stringify(map);
-        const generatedHash = crypto.createHmac('sha256',shopifyApiSecretKey)
-        .update(message).digest('hex');
-        
-        if(generatedHash !== hmac){
-            return res.status(400).send('HMAC validation failed');
-        }
-        const accessTokenRequestUrl = 'https://' + shop + '/admin/oauth/access_token';
-        const accessTokenPayLoad = {
-            client_id:shopifyApiPublicKey,
-            client_secret:shopifyApiSecretKey,
-            code
-        };
-        
-        request.post(accessTokenRequestUrl,{json: accessTokenPayLoad})
-        .then((accessTokenResponse) => {
-            const accessToken = accessTokenResponse.access_token;
-            
-            const apiRequestUrl = 'https://' + shop + '/admin/products.json?ids=715109564476';// GET URL
-            const filter = apiRequestUrl + '?ids=';//filter
-            const apiRequestHeader = {
-                'X-Shopify-Access-Token': accessToken
-            };
-            request.get(apiRequestUrl,{headers: apiRequestHeader})
-            .then((apiResponse) =>{
-                console.log(apiResponse)
-                res.end(apiResponse);
-            })
-            .catch((error) => {
-                res.status(error.statusCode).send(error.error.error_description);
-            });
-        })
-        .catch((error) =>{
-            res.status(error.statusCode).send(error.error.error_description);
-        });
-    }else{
-        res.status(400).send('Required Parameters missing');
-    }
-});
-*/
+
 app.get('/shopify/callback', async (req, res) => {
   const { shop, code, state } = req.query;
   const stateCookie = cookie.parse(req.headers.cookie).state;
@@ -472,20 +421,44 @@ function getNewToken(oAuth2Client, callback) {
 
 
 //Writes to SpreadSheet
-async function appendData(auth) {
+async function appendData(auth) {//appends data from firebase to spreadsheet
     
   //first get Data from firebase
 var array = await readPreOrderCustomer();// array will be empty if customers have already have been updated
-console.log(array);
-    /*
+if(array.length == 0){
+    return; // no data needs to be written
+}
+
+var emailArray = [];
+var pURLArray = [];
+var variantIDArray = [];
+    
+for(var i = 0; i < array.length; i++){
+    if(array[i].email.constructor === Array){// it is an array
+    emailArray.push(array[i].email); //stores an array inside array if need be
+    }else{
+        var temp = [];
+        temp.push(array[i].email);
+        emailArray.push(temp);
+    }
+    pURLArray.push(array[i].productURL);
+    variantIDArray.push(array[i].vid);
+}        
+
   var sheets = google.sheets('v4');
+  var tempValue = [];
+  for(var ind = 0; ind < emailArray.length; ind++){
+    for(var ind2 = 0; ind2 < emailArray[ind].length; ind2++){// if email array contains an array
+        tempValue.push([emailArray[ind][ind2], pURLArray[ind], variantIDArray[ind]]);
+        }
+  }
   sheets.spreadsheets.values.append({
     auth: auth,
     spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
     range: 'Sheet1', //Change Sheet1 if your worksheet's name is something else
     valueInputOption: "USER_ENTERED",
     resource: {
-      values: [ ["Void", "Canvas", "Website"], ["Paul", "Shan", "Human"] ]
+     values: tempValue
     }
   }, (err, response) => {
     if (err) {
@@ -495,8 +468,53 @@ console.log(array);
         console.log("Appended");
     }
   });
-  */
+  
+  
 }
-appendData();
 
 
+
+async function readAllCustomers(auth) {//reads all customers from google sheet
+  var result_array = [];
+  const sheets = google.sheets({version: 'v4', auth});
+    result_array = await new Promise(function(resolve, reject) {
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
+    range: 'Sheet1',
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const rows = res.data.values;
+    resolve(rows);
+    if (rows.length) {
+      // Print columns A and E, which correspond to indices 0 and 4.
+      rows.map((row) => {
+        console.log(`${row[0]}, ${row[1]},${row[2]}`);
+      });
+    } else {
+      console.log('No data found.');
+    }
+  });
+});
+    return(result_array); //returns an json of spreadsheet
+}
+
+function queryCustomers(auth) {//reads all customers from google sheet
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
+    range: 'Sheet1',
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const rows = res.data.values;
+      console.log(rows);
+    if (rows.length) {
+      // Print columns A and E, which correspond to indices 0 and 4.
+      rows.map((row) => {
+        console.log(`${row[0]}, ${row[1]},${row[2]}`);
+      });
+    } else {
+      console.log('No data found.');
+    }
+  });
+}
+authorize(content,readAllCustomers);
