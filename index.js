@@ -134,9 +134,23 @@ app.post('/clean', cors(), function(req, res){
   res.send("Database updated successfully")
 });
 
-app.get('/Sheets', cors(), function(req, res){
-  authorize((content), appendData);
-  res.send("Wrote Successfully")
+app.get('/getAllCustomersSheets', cors(), function(req, res){
+authorize(content,readAllCustomers).then(function(value) {//value is an array
+    res.send(value);
+});
+});
+
+app.get('/QuerySheetsByVID', cors(), function(req, res){//shows all customers' email by vID
+  var variantID = req.query.id;// url must contain ?id=12333123
+  authorize(content,readAllCustomers).then(function(value) {//value is an array
+    var final_array = [];
+    for(var i = 0; i < value.length; i++){
+        if(value[i][2] == variantID){
+            final_array.push(value[i])
+        }
+    }
+    res.send(final_array);//displays information of customers with a specific id
+});
 });
 
 
@@ -369,7 +383,8 @@ var content =
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
+/*
+function authorize(credentials, callback) {//asynchronous
   const {client_secret, client_id, redirect_uris} = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
@@ -378,9 +393,28 @@ function authorize(credentials, callback) {
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) return getNewToken(oAuth2Client, callback);
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
-  });
+      
+    console.log(callback(oAuth2Client));
+    callback(oAuth2Client).then(function(value) {
+    resolve(value);
+    });
+
+  }); 
+    
 }
+*/
+function authorize(credentials,func) {//synchronous authentication
+  const {client_secret, client_id, redirect_uris} = credentials.installed;
+  const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+  // Check if we have previously stored a token.
+  var token = fs.readFileSync(TOKEN_PATH);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      return func(oAuth2Client);
+    
+}
+
 
 /**
  * Get and store new token after prompting for user authorization, and then
@@ -488,7 +522,7 @@ async function readAllCustomers(auth) {//reads all customers from google sheet
     if (rows.length) {
       // Print columns A and E, which correspond to indices 0 and 4.
       rows.map((row) => {
-        console.log(`${row[0]}, ${row[1]},${row[2]}`);
+        //console.log(`${row[0]}, ${row[1]},${row[2]}`);
       });
     } else {
       console.log('No data found.');
@@ -498,23 +532,8 @@ async function readAllCustomers(auth) {//reads all customers from google sheet
     return(result_array); //returns an json of spreadsheet
 }
 
-function queryCustomers(auth) {//reads all customers from google sheet
-  const sheets = google.sheets({version: 'v4', auth});
-  sheets.spreadsheets.values.get({
-    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
-    range: 'Sheet1',
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const rows = res.data.values;
-      console.log(rows);
-    if (rows.length) {
-      // Print columns A and E, which correspond to indices 0 and 4.
-      rows.map((row) => {
-        console.log(`${row[0]}, ${row[1]},${row[2]}`);
-      });
-    } else {
-      console.log('No data found.');
-    }
-  });
-}
-authorize(content,readAllCustomers);
+
+
+
+
+
