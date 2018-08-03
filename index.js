@@ -134,7 +134,7 @@ app.post('/clean', cors(), function(req, res){
   res.send("Database updated successfully")
 });
 
-app.get('/getAllCustomersSheets', cors(), function(req, res){
+app.get('/getAllCustomersSheets', cors(), function(req, res){//shows all customers email on spreadsheet
 authorize(content,readAllCustomers).then(function(value) {//value is an array
     res.send(value);
 });
@@ -151,6 +151,11 @@ app.get('/QuerySheetsByVID', cors(), function(req, res){//shows all customers' e
     }
     res.send(final_array);//displays information of customers with a specific id
 });
+});
+
+app.post('/cleanSheets', cors(), function(req, res){//shows all customers email on spreadsheet
+    authorize(content,deleteCustomers);
+    res.send("Customers Cleaned");
 });
 
 
@@ -530,6 +535,47 @@ async function readAllCustomers(auth) {//reads all customers from google sheet
   });
 });
     return(result_array); //returns an json of spreadsheet
+}
+
+function deleteCustomers(auth) {//reads all customers from google sheet
+  const sheets = google.sheets({version: 'v4', auth});
+    
+    sheets.spreadsheets.values.get({
+    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
+    range: 'Sheet1',
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const rows = res.data.values;
+    var blank = [] 
+    for(var i = 0; i < (rows.length - 1); i++){
+        blank.push(["","",""]);
+    sheets.spreadsheets.values.update({//update spreadsheet with blanks
+    auth: auth,
+    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
+    range: 'A2', //Change Sheet1 if your worksheet's name is something else
+    valueInputOption: "USER_ENTERED",
+    resource: {
+     values: blank
+    }
+  }, (err, response) => {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    } else {
+        console.log("Deleted!");
+    }
+  });
+    }
+    if (rows.length) {//rows.length - 1 corresponds to number of rows
+      
+      rows.map((row) => {
+        //console.log(`${row[0]}, ${row[1]},${row[2]}`);
+      });
+    } else {
+      console.log('No data found.');
+    }
+  });
+  
 }
 
 
