@@ -396,3 +396,47 @@ function listMajors(auth) {
     }
   });
 }
+
+function writeFromDataBase(auth){
+    const sheets = google.sheets({version: 'v4', auth});
+    var values = [
+  [
+    // Cell values ...
+  ]
+  // Additional rows ...
+  ];
+var valueRange = Sheets.newRowData();
+valueRange.values = values;
+
+var appendRequest = Sheets.newAppendCellsRequest();
+appendRequest.sheetId = '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk'; //vessel spreadID
+appendRequest.rows = [Sheet1];
+
+var result = Sheets.Spreadsheets.Values.append(valueRange, spreadsheetId, range, {
+  valueInputOption: valueInputOption
+});
+    
+}
+
+
+function appendData(auth) {
+  var sheets = google.sheets('v4');
+  sheets.spreadsheets.values.append({
+    auth: auth,
+    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
+    range: 'Sheet1', //Change Sheet1 if your worksheet's name is something else
+    valueInputOption: "USER_ENTERED",
+    resource: {
+      values: [ ["Void", "Canvas", "Website"], ["Paul", "Shan", "Human"] ]
+    }
+  }, (err, response) => {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    } else {
+        console.log("Appended");
+    }
+  });
+}
+
+authorize((content), appendData);
