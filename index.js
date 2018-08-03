@@ -15,7 +15,8 @@ const readline = require('readline');
 const {google} = require('googleapis');
 
 
-const fireStoreCollection = 'Vessel2';
+const fireStoreCollection = 'Vessel2';// stores data of pre-order products
+const NotifyPreOrder = 'preOrderCustomer';// stores all customer data who want to opt in for notification
 const app = express();
 const shopifyApiPublicKey = process.env.SHOPIFY_API_PUBLIC_KEY;
 const shopifyApiSecretKey = process.env.SHOPIFY_API_SECRET_KEY;
@@ -211,7 +212,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 
-//Functions for Firebase
+//Functions for Firebase///////
 
 function addVariant(pID,ETA,vID,inventory){
     
@@ -303,6 +304,60 @@ async function removeProducts(){//completely wipes out out all of the data for a
         var deleteDoc = vRef.doc(index.id).delete();
     }     
 }
+
+async function getPreOrderCustomers(variantID){// 
+    var pRef = db.collection(NotifyPreOrder);  //collection name
+    var allCustomers = await pRef.doc(variantID);
+    
+    return new Promise(function(resolve, reject) {//promise 
+    allCustomers.get().then(function(doc) {
+  if (doc.exists) {//success
+      resolve(doc.data().email);
+  } else {// variant ID is not in system
+    console.log("No such document!");
+    resolve(undefined);
+    }
+    }).catch(function(error) {
+  console.log("Error getting document:", error);
+    });
+});
+    
+}
+
+function writePreOrderCustomer(customer_email,url,variantID){// writes to the database key is variantID
+getPreOrderCustomers(variantID).then(function(result) {
+    if(result == undefined){//variant is not in system
+     var data = {
+    email: customer_email,
+    productURL: url,
+    vid: variantID,
+    notified: "false" //customer hasn't been notified
+     };
+
+    }
+    else{//success and email_array contains all the emails
+        var email_array = [];
+        if(result.length > 1){//array is more than 1
+        email_array = result;    
+        }else{//array only contains 1 email       
+        email_array.push(result); 
+        }
+        email_array.push(customer_email);//add current customer email to email list
+         var data = {
+            email: email_array,
+            productURL: url,
+            vid: variantID,
+            notified: "false" //customer hasn't been notified
+        };
+        
+    }
+            // Add a new document in collection 
+    var setDoc = db.collection(NotifyPreOrder).doc(variantID).set(data);
+});
+    
+}
+
+
 
 
 
