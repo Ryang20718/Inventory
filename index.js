@@ -186,7 +186,7 @@ app.post('/clean', cors(), function(req, res){
 });
 
 app.get('/Sheets', cors(), function(req, res){
-  authorize((content), listMajors);
+  authorize((content), appendData);
   res.send("Wrote Successfully")
 });
 
@@ -298,7 +298,7 @@ async function getOutOfStock(){
 }
 
 async function removeProducts(){//completely wipes out out all of the data for a hard pre-order reset
-    var vRef = db.collection('cities');  //collection name
+    var vRef = db.collection(fireStoreCollection);  //collection name
     var allproducts = await vRef.get();//asynch
     for(index of allproducts.docs){
         var deleteDoc = vRef.doc(index.id).delete();
@@ -314,7 +314,7 @@ async function getPreOrderCustomers(variantID){//
   if (doc.exists) {//success
       resolve(doc.data().email);
   } else {// variant ID is not in system
-    console.log("No such document!");
+    console.log("No such variantID in the current Database!");
     resolve(undefined);
     }
     }).catch(function(error) {
@@ -356,6 +356,43 @@ getPreOrderCustomers(variantID).then(function(result) {
 });
     
 }
+
+
+async function readPreOrderCustomer(){//google firebase get all customer data to write to mailchimp
+    var pRef = db.collection(NotifyPreOrder);  //collection name
+    var finalArray = [];
+    finalArray = await new Promise(function(resolve, reject) {//promise that is later returned
+    var preOrderArray = [];
+    pRef.get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        if(doc.data().notified == "false"){//customer hasn't been updated to mailchimp
+            var data = {
+            email: doc.data().email,
+            productURL: doc.data().productURL,
+            vid: doc.data().vid
+        };
+            var updatedData = {// set notified to true
+            email: doc.data().email,
+            productURL: doc.data().productURL,
+            vid: doc.data().vid,
+            notified: "true",
+            }
+            //pRef.doc(doc.data().vid).set(updatedData); //updates customers to notified
+            preOrderArray.push(data);
+        }else{//customer has been updated to mailchimp
+            console.log("customers have been updated to mailchimp already");
+        }
+      });
+    resolve(Promise.all(preOrderArray));
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+});
+    return finalArray;//array of objects
+}
+
 
 
 
@@ -432,29 +469,15 @@ function getNewToken(oAuth2Client, callback) {
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-function listMajors(auth) {
-  const sheets = google.sheets({version: 'v4', auth});
-  sheets.spreadsheets.values.get({
-    spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-    range: 'Class Data!A2:E',
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const rows = res.data.values;
-    if (rows.length) {
-      console.log('Name, Major:');
-      // Print columns A and E, which correspond to indices 0 and 4.
-      rows.map((row) => {
-        console.log(`${row[0]}, ${row[4]}`);
-      });
-    } else {
-      console.log('No data found.');
-    }
-  });
-}
 
 
 //Writes to SpreadSheet
-function appendData(auth) {
+async function appendData(auth) {
+    
+  //first get Data from firebase
+var array = await readPreOrderCustomer();// array will be empty if customers have already have been updated
+console.log(array);
+    /*
   var sheets = google.sheets('v4');
   sheets.spreadsheets.values.append({
     auth: auth,
@@ -472,5 +495,8 @@ function appendData(auth) {
         console.log("Appended");
     }
   });
+  */
 }
+appendData();
+
 
