@@ -164,6 +164,12 @@ app.post('/updateSpreadSheet', cors(), function(req, res){
   res.send("PreOrder SpreadSheet updated successfully")
 });
 
+app.post('/updateSpreadSheet', cors(), function(req, res){//posts new customer to firebase
+    writePreOrderCustomer(req.body.email,req.body.url,req.body.variantID)
+  res.send("Added Successfully");
+});
+
+
 ///////////// Start the Server /////////////
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
