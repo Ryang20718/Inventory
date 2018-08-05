@@ -249,14 +249,24 @@ var getDoc = vRef.get()
       if (!doc.exists) {//productID isn't there
         var obj = {//object that will be inside the array
             pid: prodID,
-            vid: varID,
+            vid: [varID],
             msg: "",//blank so then we can email vessel to let them know
-            qty: inventory,
-            available: false,
+            qty: [inventory],
+            available: [false],
         };
     db.collection(fireStoreCollection).doc(prodID).set(obj);
       } else {//update DB 
-          console.log(doc.data());
+        var obj = {//object that will be inside the array
+            pid: doc.data().pid,
+            vid: doc.data().vid,
+            msg: "",//blank so then we can email vessel to let them know
+            qty: doc.data().qty,
+            available: doc.data().available,
+        };
+          obj.available.push(false);
+          obj.vid.push(varID);
+          obj.qty.push(inventory);
+    db.collection(fireStoreCollection).doc(prodID).set(obj);
 
       }
     })
@@ -265,7 +275,7 @@ var getDoc = vRef.get()
     });
     
 }
-        autoAddVariant("123","234","0");
+autoAddVariant("123","22134","250");
 
 
 
