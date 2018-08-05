@@ -193,7 +193,7 @@ const db = admin.firestore();
 
 //Functions for Firebase///////
 
-function addVariant(pID,ETA,vID,inventory){
+function addVariant(pID,ETA,vID,inventory){//manual
     
   Array.prototype.clean = function(deleteValue) {
   for (var i = 0; i < this.length; i++) {
@@ -232,6 +232,7 @@ function addVariant(pID,ETA,vID,inventory){
             vid: final_vID[i],
             msg: ETA_array[i],
             qty: final_inventory[i],
+            available: true,
         };
     var setDoc = db.collection(fireStoreCollection).doc(pID_array[i]).set(obj);
     }
