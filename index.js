@@ -169,6 +169,10 @@ app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new cust
   res.send("Added Successfully");
 });
 
+app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts new customer to firebase
+
+  res.send("Added Successfully");
+});
 
 ///////////// Start the Server /////////////
 
@@ -237,6 +241,32 @@ function addVariant(pID,ETA,vID,inventory){//manual
     var setDoc = db.collection(fireStoreCollection).doc(pID_array[i]).set(obj);
     }
 }
+
+function autoAddVariant(prodID,varID,inventory){//automatic add from theme.js from those that are currently out of stock
+var vRef = db.collection(fireStoreCollection).doc(prodID);
+var getDoc = vRef.get()
+    .then(doc => {
+      if (!doc.exists) {//productID isn't there
+        var obj = {//object that will be inside the array
+            pid: prodID,
+            vid: varID,
+            msg: "",//blank so then we can email vessel to let them know
+            qty: inventory,
+            available: false,
+        };
+    db.collection(fireStoreCollection).doc(prodID).set(obj);
+      } else {//update DB 
+          console.log(doc.data());
+
+      }
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
+    
+}
+        autoAddVariant("123","234","0");
+
 
 
 
