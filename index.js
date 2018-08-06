@@ -170,9 +170,17 @@ app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new cust
 });
 
 app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out of stock products to firebase
-  autoAddVariant(req.body.prodID,req.body.varID,req.body.inventory);    
+  autoAddVariant(req.body.prodID,req.body.varID,req.body.inventory,req.body.title);    
   res.send("Added Successfully");
 });
+
+app.get('/getAllProductsNeedMsg', cors(), function(req, res){//shows all products that need msgs
+getVariantRequireMsg().then(function(value) {
+    res.send(value);
+});
+});
+
+
 
 ///////////// Start the Server /////////////
 
@@ -242,7 +250,7 @@ function addVariant(pID,ETA,vID,inventory){//manual
     }
 }
 
-function autoAddVariant(prodID,varID,inventory){//automatic add from theme.js from those that are currently out of stock
+function autoAddVariant(prodID,varID,inventory,title){//automatic add from theme.js from those that are currently out of stock
 var vRef = db.collection(fireStoreCollection).doc(prodID);
 var getDoc = vRef.get()
     .then(doc => {
@@ -253,6 +261,7 @@ var getDoc = vRef.get()
             msg: "",//blank so then we can email vessel to let them know
             qty: [inventory],
             available: [false],
+            name: [title],
         };
     db.collection(fireStoreCollection).doc(prodID).set(obj);
       } else {//update DB 
@@ -262,10 +271,12 @@ var getDoc = vRef.get()
             msg: "",//blank so then we can email vessel to let them know
             qty: doc.data().qty,
             available: doc.data().available,
+            name: doc.data().name,
         };
           obj.available.push(false);
           obj.vid.push(varID);
           obj.qty.push(inventory);
+          obj.name.push(title);
     db.collection(fireStoreCollection).doc(prodID).set(obj);
 
       }
@@ -276,7 +287,27 @@ var getDoc = vRef.get()
 }
 
 
+async function getVariantRequireMsg(){//get all variants that need msgs
+var vRef = db.collection(fireStoreCollection);
+var resultArray = new Array();// stores all the variants
+return new Promise(function(resolve, reject) {
+    vRef.get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+          for(var i = 0; i < doc.data().available.length; i++){
+            if(doc.data().available[i] == false){// only pushes false available
+            resultArray.push(doc.data().vid[i]);//need to change to variant name
+            }
+          }
+      });
+        resolve(resultArray);
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+});
 
+}
 
 
 
@@ -291,6 +322,7 @@ async function getDatabase(){
             vid: index.data().vid,
             msg: index.data().msg,
             qty: index.data().qty,
+            available: index.data().available,
         };
         result_array.push(obj);
     } 
@@ -310,6 +342,7 @@ async function getOutOfStock(){
                 vid: index.data().vid[vIndex],
                 msg: index.data().msg,
                 qty: index.data().qty[vIndex],
+                available: index.data().available[vIndex],
                 };
                 result_array.push(obj);
             }
@@ -317,6 +350,8 @@ async function getOutOfStock(){
     } 
     return result_array;
 }
+
+
 
 async function removeProducts(){//completely wipes out out all of the data for a hard pre-order reset
     var vRef = db.collection(fireStoreCollection);  //collection name
