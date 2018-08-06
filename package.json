@@ -21,6 +21,8 @@
     "express": "^4.16.3",
     "firebase-admin": "^5.13.1",
     "googleapis": "^27.0.0",
+    "nodemailer": "^4.6.7",
+    "nodemailer-mandrill-transport": "^1.2.0",
     "nonce": "^1.0.4",
     "path": "^0.12.7",
     "querystring": "^0.2.0"

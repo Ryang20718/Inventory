@@ -13,6 +13,8 @@ var admin = require("firebase-admin");
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+var nodemailer = require('nodemailer');
+var mandrillTransport = require('nodemailer-mandrill-transport');
 
 
 const fireStoreCollection = 'Vessel2';// stores data of pre-order products
@@ -175,11 +177,16 @@ app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out 
   res.send("Added Successfully");
 });
 
-app.get('/getAllProductsNeedMsg', cors(), function(req, res){//shows all products that need msgs
+app.get('/getAllProductsNeedMsg', cors(), function(req, res){//Will Email Staff all products that need msgs
 getVariantRequireMsg().then(function(value) {
-    res.send(value);
+    var html = "";
+    for(var i = 0; i < value.length; i++){
+    html += "<ul>" + value[i] + "</ul>";
+    }
+    vesselMandrill("ryanyang99@hotmail.com", html);
 });
 });
+
 
 
 
@@ -674,6 +681,29 @@ function deleteCustomers(auth) {//reads all customers from google sheet
   
 }
 
+////////////////Function for mailer/////////////
+function vesselMandrill(receiver, message) {
+    
+    
+    var transport = nodemailer.createTransport(mandrillTransport({
+        auth: {
+            apiKey: process.env.MANDRILL_API
+        }
+    }));
+
+    transport.sendMail({
+        from   : 'info@vesselbags.com',
+        html   : message,
+        subject: 'Vessel Products That Require ETA Messages',
+        to     : receiver
+    }, function (err, info) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(info);
+        }
+    });
+}
 
 
 
