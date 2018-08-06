@@ -255,17 +255,7 @@ function autoAddVariant(prodID,varID,inventory,title){//automatic add from theme
 var vRef = db.collection(fireStoreCollection).doc(prodID);
 var getDoc = vRef.get()
     .then(doc => {
-      if (!doc.exists) {//productID isn't there
-        var obj = {//object that will be inside the array
-            pid: prodID,
-            vid: [varID],
-            msg: "",//blank so then we can email vessel to let them know
-            qty: [inventory],
-            available: [false],
-            name: [title],
-        };
-    db.collection(fireStoreCollection).doc(prodID).set(obj);
-      } else {//update DB 
+      if (doc.exists) {//productID is already there
         var obj = {//object that will be inside the array
             pid: doc.data().pid,
             vid: doc.data().vid,
@@ -279,7 +269,16 @@ var getDoc = vRef.get()
           obj.qty.push(inventory);
           obj.name.push(title);
     db.collection(fireStoreCollection).doc(prodID).set(obj);
-
+      } else {//productID isn't there
+    var obj = {//object that will be inside the array
+            pid: prodID,
+            vid: [varID],
+            msg: "",//blank so then we can email vessel to let them know
+            qty: [inventory],
+            available: [false],
+            name: [title],
+        };
+    db.collection(fireStoreCollection).doc(prodID).set(obj);
       }
     })
     .catch(err => {
