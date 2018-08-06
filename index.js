@@ -169,8 +169,8 @@ app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new cust
   res.send("Added Successfully");
 });
 
-app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts new customer to firebase
-
+app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out of stock products to firebase
+  autoAddVariant(req.body.prodID,req.body.varID,req.body.inventory);    
   res.send("Added Successfully");
 });
 
@@ -236,7 +236,7 @@ function addVariant(pID,ETA,vID,inventory){//manual
             vid: final_vID[i],
             msg: ETA_array[i],
             qty: final_inventory[i],
-            available: true,
+            available: [true],
         };
     var setDoc = db.collection(fireStoreCollection).doc(pID_array[i]).set(obj);
     }
@@ -273,9 +273,10 @@ var getDoc = vRef.get()
     .catch(err => {
       console.log('Error getting document', err);
     });
-    
 }
-autoAddVariant("123","22134","250");
+
+
+
 
 
 
