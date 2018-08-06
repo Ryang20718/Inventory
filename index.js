@@ -256,6 +256,9 @@ var vRef = db.collection(fireStoreCollection).doc(prodID);
 var getDoc = vRef.get()
     .then(doc => {
       if (doc.exists) {//productID is already there
+        var arrayCheck = [];//checks if Variant ID is in database
+        arrayCheck = doc.data().vid;
+        if(arrayCheck.includes(varID) == false){   
         var obj = {//object that will be inside the array
             pid: doc.data().pid,
             vid: doc.data().vid,
@@ -269,6 +272,8 @@ var getDoc = vRef.get()
           obj.qty.push(inventory);
           obj.name.push(title);
     db.collection(fireStoreCollection).doc(prodID).set(obj);
+        }
+
       } else {//productID isn't there
     var obj = {//object that will be inside the array
             pid: prodID,
@@ -286,6 +291,7 @@ var getDoc = vRef.get()
     });
 }
 
+autoAddVariant("644721770556","7824898555964",0,"Single Strap - Black" );
 
 
 async function getVariantRequireMsg(){//get all variants that need msgs
