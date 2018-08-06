@@ -117,8 +117,9 @@ app.get('/shopify/callback', async (req, res) => {
 
 //Firebase
 app.get('/getData', async (req, res) => {
-  var result_array = await getOutOfStock();
-  res.send(result_array)
+getOutOfStock().then(function(value) {
+    res.send(value)
+});
 });
 
 
@@ -332,24 +333,33 @@ async function getDatabase(){
 
 //function for processing and returning which variant id's are out of stock 
 async function getOutOfStock(){
-    var result_array = new Array();
-    var vRef = db.collection(fireStoreCollection);  //collection name
-    var allproducts = await vRef.get();//asynch
-    for(index of allproducts.docs){
-        for(vIndex = 0; vIndex< index.data().qty.length;vIndex++){
-            if(index.data().qty[vIndex] < 1){//checks if product is out of stock
-            var obj = {//object that will be inside the array
-                pid: index.id,
-                vid: index.data().vid[vIndex],
-                msg: index.data().msg,
-                qty: index.data().qty[vIndex],
-                available: index.data().available[vIndex],
+    var vRef = db.collection(fireStoreCollection);
+var resultArray = new Array();// stores all the variants
+return new Promise(function(resolve, reject) {
+    vRef.get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+          for(var i = 0; i < doc.data().qty.length; i++){
+            if(doc.data().qty[i] < 1){// only pushes false available
+                var obj = {//object that will be inside the array
+                pid: doc.id,
+                vid: doc.data().vid[i],
+                msg: doc.data().msg,
+                qty: doc.data().qty[i],
+                available: doc.data().available[i],
+                //name: doc.data().name[i],
                 };
-                result_array.push(obj);
+                console.log(doc.data());
+            resultArray.push(obj);//need to change to variant name
             }
-        }
-    } 
-    return result_array;
+          }
+      });
+        resolve(resultArray);
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+});
 }
 
 
