@@ -287,6 +287,7 @@ var getDoc = vRef.get()
 }
 
 
+
 async function getVariantRequireMsg(){//get all variants that need msgs
 var vRef = db.collection(fireStoreCollection);
 var resultArray = new Array();// stores all the variants
@@ -296,7 +297,7 @@ return new Promise(function(resolve, reject) {
       snapshot.forEach(doc => {
           for(var i = 0; i < doc.data().available.length; i++){
             if(doc.data().available[i] == false){// only pushes false available
-            resultArray.push(doc.data().vid[i]);//need to change to variant name
+            resultArray.push(doc.data().name[i]);//need to change to variant name
             }
           }
       });
