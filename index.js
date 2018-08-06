@@ -352,9 +352,8 @@ return new Promise(function(resolve, reject) {
                 msg: doc.data().msg,
                 qty: doc.data().qty[i],
                 available: doc.data().available[i],
-                //name: doc.data().name[i],
+                name: doc.data().name[i],
                 };
-                console.log(doc.data());
             resultArray.push(obj);//need to change to variant name
             }
           }
