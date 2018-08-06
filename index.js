@@ -344,7 +344,11 @@ return new Promise(function(resolve, reject) {
     vRef.get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-          resultArray.push(doc.data());
+          for(var i = 0; i < doc.data().vid.length; i++){
+              if(doc.data().qty[i] < 1){
+                resultArray.push(doc.data().vid[i]);
+              }
+          }
       });
         resolve(resultArray);
     })
