@@ -344,19 +344,7 @@ return new Promise(function(resolve, reject) {
     vRef.get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-          for(var i = 0; i < doc.data().qty.length; i++){
-            if(doc.data().qty[i] < 1){// only pushes false available
-                var obj = {//object that will be inside the array
-                pid: doc.id,
-                vid: doc.data().vid[i],
-                msg: doc.data().msg,
-                qty: doc.data().qty[i],
-                available: doc.data().available[i],
-                name: doc.data().name[i],
-                };
-            resultArray.push(obj);//need to change to variant name
-            }
-          }
+          resultArray.push(doc.data());
       });
         resolve(resultArray);
     })
