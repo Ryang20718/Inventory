@@ -352,9 +352,26 @@ var vRef = db.collection(fireStoreCollection);
     });
 }
 
-function remindMsg(req.body.prodID,req.body.varID){//sets the product's available to false to remind vessel to update the message
-    
+function remindMsg(prodID,varID){//sets the product's available to false to remind vessel to update the message
+var vRef = db.collection(fireStoreCollection).doc(prodID);
+    vRef.get()
+    .then(doc => {
+      if (!doc.exists) {
+        console.log('No such document!');
+      } else {//document exists
+        var availArray = []; //all available array
+        availArray = doc.data().available;
+        var indexOfVar = doc.data().vid.indexOf(varID);//index of the variantID
+        availArray[indexOfVar] = false;
+        vRef.update({ available: availArray});//updates the array if ETA message is still not updated
+      }
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
+  
 }
+remindMsg("639345852476","7824886104124");
 
 async function getDatabase(){
     var result_array = new Array();
