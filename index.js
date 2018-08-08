@@ -371,7 +371,7 @@ var vRef = db.collection(fireStoreCollection).doc(prodID);
     });
   
 }
-remindMsg("639345852476","7824886104124");
+
 
 async function getDatabase(){
     var result_array = new Array();
