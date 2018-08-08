@@ -184,6 +184,7 @@ getVariantRequireMsg().then(function(value) {
     html += "<ul>" + value[i] + "</ul>";
     }
     vesselMandrill("ryanyang99@hotmail.com", html);
+    setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
 });
 });
 
@@ -329,6 +330,22 @@ return new Promise(function(resolve, reject) {
 }
 
 
+async function setAllAvailableFalse(){//sets all available to true after messaging
+var vRef = db.collection(fireStoreCollection);
+    vRef.get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+          var fArray = [];
+          for(var i = 0; i < doc.data().available.length; i++){
+            fArray.push(true);
+          }
+          vRef.doc(doc.id).update({ available: fArray});
+      });
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+}
 
 
 async function getDatabase(){
