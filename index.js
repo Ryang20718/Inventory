@@ -189,9 +189,8 @@ getVariantRequireMsg().then(function(value) {
 
 app.get('/checkOutOfStock', async (req, res) => {
 //passing multiple params  ?param1=value1&param2=value2&param3=value3
-var variantID = String(req.query.vid);// url must contain ?vid=12333123
 var prodID = String(req.query.pid);//
-checkOutOfStock(prodID,variantID).then(function(value) {
+checkOutOfStock(prodID).then(function(value) {
     res.send(value);
 });
 });
@@ -373,26 +372,24 @@ return new Promise(function(resolve, reject) {
 
 
 
-async function checkOutOfStock(prodID,varID){//checks if varID is in database
-var vRef = db.collection(fireStoreCollection).doc(prodID);
+async function checkOutOfStock(prodID){//checks if varID is in database
+var cityRef = db.collection(fireStoreCollection).doc(prodID);
 return new Promise(function(resolve, reject) {
-vRef.get().then(function(doc) {
-    if (doc.exists) {
-        if(doc.data().vid.includes(varID)){
-        resolve(true);   
-        }
-        resolve (false);//returns false if the product is out of stock
-    } else {
-        resolve(false);
-        console.log("No such document!");
-    }
-}).catch(function(error) {
-    console.log("Error getting document:", error);
-});
+    cityRef.get()
+    .then(doc => {
+      if (!doc.exists) {
+        resolve([]);
+        console.log('No such document!');
+      } else {
+        resolve(doc.data().vid);
+        console.log('Document data:', doc.data().vid);
+      }
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
 });
 }
-                   
-
 
 async function removeProducts(){//completely wipes out out all of the data for a hard pre-order reset
     var vRef = db.collection(fireStoreCollection);  //collection name
