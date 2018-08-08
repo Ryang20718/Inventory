@@ -183,8 +183,10 @@ getVariantRequireMsg().then(function(value) {
     for(var i = 0; i < value.length; i++){
     html += "<ul>" + value[i] + "</ul>";
     }
-    vesselMandrill("ryanyang99@hotmail.com", html);
+    if(value.length > 0){
+    vesselMandrill("info@vesselbags.com", html);
     setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
+    }
 });
 });
 
