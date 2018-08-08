@@ -187,6 +187,15 @@ getVariantRequireMsg().then(function(value) {
 });
 });
 
+app.get('/checkOutOfStock', async (req, res) => {
+//passing multiple params  ?param1=value1&param2=value2&param3=value3
+var variantID = req.query.vid;// url must contain ?vid=12333123
+var prodId = req.query.pid;//
+checkOutOfStock(req.body.prodID,req.body.varID).then(function(value) {
+    res.send(value);
+});
+});
+
 
 ///////////// Start the Server /////////////
 
@@ -362,6 +371,27 @@ return new Promise(function(resolve, reject) {
 });
 }
 
+
+
+async function checkOutOfStock(prodID,varID){//checks if varID is in database
+var vRef = db.collection(fireStoreCollection).doc(prodID);
+return new Promise(function(resolve, reject) {
+vRef.get().then(function(doc) {
+    if (doc.exists) {
+        if(doc.data().vid.includes(varID)){
+        resolve(true);   
+        }
+        resolve (false);//returns false if the product is out of stock
+    } else {
+        resolve(false);
+        console.log("No such document!");
+    }
+}).catch(function(error) {
+    console.log("Error getting document:", error);
+});
+});
+}
+                   
 
 
 async function removeProducts(){//completely wipes out out all of the data for a hard pre-order reset
