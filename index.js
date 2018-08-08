@@ -189,9 +189,9 @@ getVariantRequireMsg().then(function(value) {
 
 app.get('/checkOutOfStock', async (req, res) => {
 //passing multiple params  ?param1=value1&param2=value2&param3=value3
-var variantID = req.query.vid;// url must contain ?vid=12333123
-var prodId = req.query.pid;//
-checkOutOfStock(req.body.prodID,req.body.varID).then(function(value) {
+var variantID = String(req.query.vid);// url must contain ?vid=12333123
+var prodID = String(req.query.pid);//
+checkOutOfStock(prodID,variantID).then(function(value) {
     res.send(value);
 });
 });
