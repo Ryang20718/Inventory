@@ -188,6 +188,11 @@ getVariantRequireMsg().then(function(value) {
 });
 });
 
+app.post('/cartCheckMsg', cors(), function(req, res){//posts all out of stock products to firebase
+  remindMsg(req.body.prodID,req.body.varID);    
+  res.send("Updated Successfully");
+});
+
 app.get('/checkOutOfStock', async (req, res) => {
 //passing multiple params  ?param1=value1&param2=value2&param3=value3
 var prodID = String(req.query.pid);//
@@ -347,6 +352,9 @@ var vRef = db.collection(fireStoreCollection);
     });
 }
 
+function remindMsg(req.body.prodID,req.body.varID){//sets the product's available to false to remind vessel to update the message
+    
+}
 
 async function getDatabase(){
     var result_array = new Array();
