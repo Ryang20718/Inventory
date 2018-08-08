@@ -298,7 +298,6 @@ var getDoc = vRef.get()
     });
 }
 
-autoAddVariant("644721770556","7824898555964",0,"Single Strap - Black" );
 
 
 async function getVariantRequireMsg(){//get all variants that need msgs
@@ -464,7 +463,26 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
 }
 
 
-
+function checkOutOfStock(prodID,varID){
+const firestore = firebase.firestore();
+firestore.settings({timestampsInSnapshot: true});
+var vRef = db.collection(fireStoreCollection);
+var query = vRef.doc(prodID).where('vid','array-contains',varID);//searches for array
+return new Promise(function(resolve, reject) {
+query.get().then(function(doc) {//checks if this exists
+    if (doc.exists) {
+        resolve(true);
+        console.log("Document data:", doc.data());
+    } else {
+        // doc.data() will be undefined in this case
+        resolve(false);
+        console.log("No such document!");
+    }
+}).catch(function(error) {
+    console.log("Error getting document:", error);
+});
+});    
+}
 
 
 
