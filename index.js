@@ -564,6 +564,17 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
 }
 
 
+async function checkDay(day){
+var data = {//current date to check for 24 hours
+  date: 4
+};
+    var day = db.collection('day').doc('date').set(data);
+        var TodayDate = new Date();
+    console.log(TodayDate.getDay());//current day
+    
+}
+checkDay(4);
+
 ////////google spreadsheet functions///////
 
 
