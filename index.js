@@ -448,6 +448,20 @@ async function removeProducts(){//completely wipes out out all of the data for a
 }
 
 async function removeInStock(prodID,varID){//removess products that are in stock only if the inventory_quantity is greater than 0
+    var TodayDate = new Date();
+
+    var cityRef = db.collection('day').doc('date');
+    var getDoc = cityRef.get()
+    .then(doc => {
+    if(doc.data().date == TodayDate.getDay()){//don't do anything
+        
+    }else{
+        
+    var data = {//current date to check for 24 hours
+    date: TodayDate.getDay()
+    };
+    var day = db.collection('day').doc('date').set(data);
+    
     var pRef = db.collection(fireStoreCollection);  //collection name
     var query = pRef.doc(prodID);//query
     
@@ -462,7 +476,8 @@ async function removeInStock(prodID,varID){//removess products that are in stock
     obj.available.splice(index,1);   
     query.set(obj);
     }else{
-    query.delete();    
+    query.delete();   
+    
     }
 
     
@@ -471,7 +486,9 @@ async function removeInStock(prodID,varID){//removess products that are in stock
     }
     }).catch(function(error) {
   console.log("Error getting document:", error);
-    });
+    }); 
+    }
+    })
     
 }
 
@@ -564,16 +581,7 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
 }
 
 
-async function checkDay(day){
-var data = {//current date to check for 24 hours
-  date: 4
-};
-    var day = db.collection('day').doc('date').set(data);
-        var TodayDate = new Date();
-    console.log(TodayDate.getDay());//current day
-    
-}
-checkDay(4);
+
 
 ////////google spreadsheet functions///////
 
