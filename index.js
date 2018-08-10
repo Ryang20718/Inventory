@@ -203,6 +203,10 @@ checkOutOfStock(prodID).then(function(value) {
 });
 });
 
+app.post('/removeInStock', cors(), function(req, res){//posts all out of stock products to firebase
+  removeInStock(req.body.prodID,req.body.varID);   
+  res.send("Updated Successfully");
+});
 
 ///////////// Start the Server /////////////
 
