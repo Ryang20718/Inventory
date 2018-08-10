@@ -443,6 +443,23 @@ async function removeProducts(){//completely wipes out out all of the data for a
     }     
 }
 
+async function removeInStock(prodID,varID){//removess products that are in stock only if the inventory_quantity is greater than 0
+    var pRef = db.collection(NotifyPreOrder);  //collection name
+    var query = await pRef.doc(prodID);//query
+    
+    query.get().then(function(doc) {
+  if (doc.exists) {//success
+    var obj = doc.data(); 
+    
+  } else {// variant ID is not in system
+    console.log("No such variantID in the current Database!");
+    }
+    }).catch(function(error) {
+  console.log("Error getting document:", error);
+    });
+    
+}
+
 async function getPreOrderCustomers(variantID){// 
     var pRef = db.collection(NotifyPreOrder);  //collection name
     var allCustomers = await pRef.doc(variantID);
