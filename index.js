@@ -580,7 +580,20 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
     return finalArray;//array of objects
 }
 
-
+async function deleteNotifiedCustomer(){
+    var pRef = db.collection(NotifyPreOrder);  //collection name
+    pRef.get()//asynch
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+          if(doc.data().notified == true){//customer was notified
+              pRef.doc(doc.id).delete();
+          }
+      });
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });    
+}
 
 
 ////////google spreadsheet functions///////
@@ -805,5 +818,11 @@ getVariantRequireMsg().then(function(value) {
     setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
     }
 });  
+});
+
+
+//chron for deleting all customers who have been notified
+schedule.scheduleJob('* * * * 3', function(){//executes task once a week
+deleteNotifiedCustomer();
 });
 
