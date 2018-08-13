@@ -177,18 +177,6 @@ app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out 
   res.send("Added Successfully");
 });
 
-app.get('/getAllProductsNeedMsg', cors(), function(req, res){//Will Email Staff all products that need msgs
-getVariantRequireMsg().then(function(value) {
-    var html = "";
-    for(var i = 0; i < value.length; i++){
-    html += "<ul>" + value[i] + "</ul>";
-    }
-    if(value.length > 0){
-    vesselMandrill("info@vesselbags.com", html);
-    setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
-    }
-});
-});
 
 app.post('/cartCheckMsg', cors(), function(req, res){//posts all out of stock products to firebase
   remindMsg(req.body.prodID,req.body.varID);    
@@ -803,6 +791,16 @@ function vesselMandrill(receiver, message) {
 }
 
 
-
+///CHRON FUNCTION
+getVariantRequireMsg().then(function(value) {
+    var html = "";
+    for(var i = 0; i < value.length; i++){
+    html += "<ul>" + value[i] + "</ul>";
+    }
+    if(value.length > 0){
+    vesselMandrill("info@vesselbags.com", html);
+    setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
+    }
+});
 
 
