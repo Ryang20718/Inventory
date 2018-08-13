@@ -791,7 +791,10 @@ function vesselMandrill(receiver, message) {
 }
 
 
-///CHRON FUNCTION
+///CHRON FUNCTION that sends emails every day
+var schedule = require('node-schedule');
+ 
+var j = schedule.scheduleJob('* * * * 3', function(){//executes task once a week
 getVariantRequireMsg().then(function(value) {
     var html = "";
     for(var i = 0; i < value.length; i++){
@@ -801,6 +804,6 @@ getVariantRequireMsg().then(function(value) {
     vesselMandrill("info@vesselbags.com", html);
     setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
     }
+});  
 });
-
 
