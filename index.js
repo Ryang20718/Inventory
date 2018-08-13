@@ -447,6 +447,44 @@ async function removeProducts(){//completely wipes out out all of the data for a
     }     
 }
 
+
+async function removeProductsWithInventory(){//completely wipes out out all of the data for a hard pre-order reset
+    var vRef = db.collection(fireStoreCollection);  //collection name
+    vRef.get()//asynch
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+          obj = doc.data();
+        if(doc.data().qty.length == 1){
+            if(doc.data().qty[0] != "0"){
+                vRef.doc(doc.id).delete();
+            }
+        }
+        else{//element is longer than 1
+        obj = doc.data();
+        var i = doc.data().qty.length;
+            while (i--) {
+            if (doc.data().qty[i] != "0") { 
+             obj.name.splice(i, 1);
+             obj.available.splice(i, 1);
+             obj.vid.splice(i, 1);
+             obj.qty.splice(i, 1);
+             vRef.doc(doc.id).set(obj);
+             if(i == 0 && doc.data().qty.length == 1){
+                vRef.doc(doc.id).delete();
+             }
+            } 
+        }
+      }
+      });
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+
+}
+
+
+
 async function removeInStock(prodID,varID){//removess products that are in stock only if the inventory_quantity is greater than 0
     var pRef = db.collection(fireStoreCollection);  //collection name
     var query = pRef.doc(prodID);//query
@@ -455,26 +493,15 @@ async function removeInStock(prodID,varID){//removess products that are in stock
   if (doc.exists) {//success
     var obj = doc.data(); //sets obj equal to the data obj
     const index = obj.vid.indexOf(varID);//finds index of varID
-    if(index != 0){//updates fields by reading
-    obj.vid.splice(index, 1);
-    obj.name.splice(index,1);
-    obj.qty.splice(index,1);
-    obj.available.splice(index,1);   
-    query.set(obj);
-    }else{
-    query.delete();    
-    }
-
-    
-  } else {// variant ID is not in system
-    console.log("No such variantID in the current Database!");
+    obj.qty[index] = "0";
+    console.log(obj);
     }
     }).catch(function(error) {
   console.log("Error getting document:", error);
     });
     
 }
-
+removeInStock("6447201649234","7824881877052");
 
 async function getPreOrderCustomers(variantID){// 
     var pRef = db.collection(NotifyPreOrder);  //collection name
