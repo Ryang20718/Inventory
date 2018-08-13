@@ -204,7 +204,8 @@ checkOutOfStock(prodID).then(function(value) {
 });
 
 app.post('/removeInStock', cors(), function(req, res){//posts all out of stock products to firebase
-  removeInStock(req.body.prodID,req.body.varID);   
+  removeInStock(req.body.prodID,req.body.varID); 
+  removeProductsWithInventory();
   res.send("Updated Successfully");
 });
 
@@ -501,7 +502,7 @@ async function removeInStock(prodID,varID){//removess products that are in stock
     });
     
 }
-removeInStock("6447201649234","7824881877052");
+
 
 async function getPreOrderCustomers(variantID){// 
     var pRef = db.collection(NotifyPreOrder);  //collection name
