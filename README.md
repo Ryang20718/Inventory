@@ -3,6 +3,9 @@
 
 ### Backend for Pre-Order Shopify App
 
+#### Shopify E-commerce Integration
+
+- Utilized Shopify's Oauth2 and REST API to authenticate, read and write data from Shopify to store in database.
 
 #### Mailchimp
 
@@ -14,5 +17,8 @@
 - Queries Products that are out of stock and writes these products to a database whenever a customer displays interest in buying the product
 - Automates Gathering emails and notifying customers of when products will be in stock. Increases E-commerce customer conversion rate and customer signup rate.
 
+#### Firestore
+
+- Designed NoSQL Database for hashing and efficiently querying data of O(1) time.
 
 
