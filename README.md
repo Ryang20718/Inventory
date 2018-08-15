@@ -24,8 +24,7 @@
 #### Firestore
 
 - Designed NoSQL Database for hashing and efficiently querying data of O(1) time.
-<br />
-![](/public/firebase.png)
+- ![](/public/firebase.png)
 
 #### Sample
 
