@@ -6,14 +6,14 @@
 #### Shopify E-commerce Integration
 
 - Utilized Shopify's Oauth2 and REST API to authenticate, read and write data from Shopify to store in database.
-<br>
+=============
 ![](/public/shopify.png)
 
 #### Mailchimp
 
 - Writes to Spreadsheet and automates collection of emails of customers wanting to be notified of products currently out of stock
 - Automates creation of CSV file for customers wanting to be notified for MailChimp Integration, allowing bulk update of new customers.
-<br>
+=============
 ![](/public/sheets.png)
 ![](/public/chimp.png)
 
@@ -25,7 +25,7 @@
 #### Firestore
 
 - Designed NoSQL Database for hashing and efficiently querying data of O(1) time.
-<br>
+=============
 ![](/public/firebase.png)
 
 #### Sample
