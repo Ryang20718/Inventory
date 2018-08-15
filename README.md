@@ -11,6 +11,8 @@
 
 - Writes to Spreadsheet and automates collection of emails of customers wanting to be notified of products currently out of stock
 - Automates creation of CSV file for customers wanting to be notified for MailChimp Integration, allowing bulk update of new customers.
+![](/public/sheets.png)
+![](/public/chimp.png)
 
 #### Pre-Order Products
 
@@ -21,4 +23,5 @@
 
 - Designed NoSQL Database for hashing and efficiently querying data of O(1) time.
 
+#### Sample
 
