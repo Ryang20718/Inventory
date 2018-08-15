@@ -6,8 +6,7 @@
 #### Shopify E-commerce Integration
 
 - Utilized Shopify's Oauth2 and REST API to authenticate, read and write data from Shopify to store in database.
-=============
-![](/public/shopify.png)
+- ![](/public/shopify.png)
 
 #### Mailchimp
 
@@ -25,7 +24,7 @@
 #### Firestore
 
 - Designed NoSQL Database for hashing and efficiently querying data of O(1) time.
-=============
+<br />
 ![](/public/firebase.png)
 
 #### Sample
