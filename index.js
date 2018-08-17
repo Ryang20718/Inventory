@@ -826,3 +826,21 @@ schedule.scheduleJob('* * * * 3', function(){//executes task once a week
 deleteNotifiedCustomer();
 });
 
+
+
+////////////////Function for mailChimp/////////////
+const Mailchimp = require('mailchimp-api-v3'); // node js mailchimp wrapper library
+app.post('/signup', function (req, res) {
+  const api_key = process.env.MAILCHIMP_API; // api key -
+  const list_id = process.env.LIST_KEY; // list id
+  const mailchimp = new Mailchimp(api_key); // create MailChimp instance
+  mailchimp.post(`lists/${list_id}`, { members: [{ // send a post request to create new subscription to the list
+      email_address:req.body.email,
+      status: "subscribed"
+  }]
+  }).then((reslut) => {
+    return console.log(reslut);
+  }).catch((error) => {
+    return console.log(error);
+  });
+});
