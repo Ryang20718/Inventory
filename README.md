@@ -6,6 +6,7 @@
 #### Shopify E-commerce Integration
 
 - Utilized Shopify's Oauth2 and REST API to authenticate, read and write data from Shopify to store in database.
+- Utilized Google Sheets API to read and write data and automate the creation of a csv file
 - ![](/public/shopify.png)
 
 #### Mailchimp
