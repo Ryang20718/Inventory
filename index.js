@@ -830,7 +830,7 @@ deleteNotifiedCustomer();
 
 ////////////////Function for mailChimp/////////////
 const Mailchimp = require('mailchimp-api-v3'); // node js mailchimp wrapper library
-app.post('/signup', function (req, res) {
+app.post('/signup', cors(), function (req, res) {
   const api_key = process.env.MAILCHIMP_API; // api key -
   const list_id = process.env.LIST_KEY; // list id
   const mailchimp = new Mailchimp(api_key); // create MailChimp instance
