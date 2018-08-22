@@ -514,21 +514,20 @@ async function getPreOrderCustomers(variantID){//
 function writePreOrderCustomer(customer_email,url,variantID){// writes to the database key is variantID
 getPreOrderCustomers(variantID).then(function(result) {
     if(result == undefined){//variant is not in system
+        var emptyArray = [];
+        var emptyNotifArray = [];
+        emptyNotifArray.push("false");
+        emptyArray.push(customer_email);
      var data = {
-    email: customer_email,
+    email: emptyArray,
     productURL: url,
     vid: variantID,
-    notified: "false" //customer hasn't been notified
+    notified: emptyNotifArray //customer hasn't been notified
      };
 
     }
     else{//success and email_array contains all the emails
-        var email_array = [];
-        if(result.length > 1){//array is more than 1
-        email_array = result;    
-        }else{//array only contains 1 email       
-        email_array.push(result); 
-        }
+        var email_array = result;
         email_array.push(customer_email);//add current customer email to email list
          var data = {
             email: email_array,
@@ -540,9 +539,12 @@ getPreOrderCustomers(variantID).then(function(result) {
     }
             // Add a new document in collection 
     var setDoc = db.collection(NotifyPreOrder).doc(variantID).set(data);
-});
+    }).catch(function(error) {
+  console.log("Error getting document:", error);
+    });
     
 }
+
 
 
 async function readPreOrderCustomer(){//google firebase get all customer data to write to mailchimp
