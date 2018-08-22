@@ -168,9 +168,11 @@ app.post('/updateSpreadSheet', cors(), function(req, res){
 });
 
 app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new customer to firebase
+    newCustomer(req.body.email,req.body.url);
     writePreOrderCustomer(req.body.email,req.body.url,req.body.variantID)
   res.send("Added Successfully");
 });
+
 
 app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out of stock products to firebase
   autoAddVariant(req.body.prodID,req.body.varID,req.body.inventory,req.body.title);    
@@ -794,6 +796,29 @@ function vesselMandrill(receiver, message) {
         html   : message,
         subject: 'Vessel Products That Require ETA Messages',
         to     : receiver
+    }, function (err, info) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(info);
+        }
+    });
+}
+
+function newCustomer(receiver, message) {
+    
+    
+    var transport = nodemailer.createTransport(mandrillTransport({
+        auth: {
+            apiKey: process.env.MANDRILL_API
+        }
+    }));
+
+    transport.sendMail({
+        from   : 'info@vesselbags.com',
+        html   : 'New Customer is interested in ' + message,
+        subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
+        to     : 'ryanyang99@hotmail.com'
     }, function (err, info) {
         if (err) {
             console.error(err);
