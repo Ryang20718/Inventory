@@ -515,14 +515,12 @@ function writePreOrderCustomer(customer_email,url,variantID){// writes to the da
 getPreOrderCustomers(variantID).then(function(result) {
     if(result == undefined){//variant is not in system
         var emptyArray = [];
-        var emptyNotifArray = [];
-        emptyNotifArray.push("false");
         emptyArray.push(customer_email);
      var data = {
     email: emptyArray,
     productURL: url,
     vid: variantID,
-    notified: emptyNotifArray //customer hasn't been notified
+    notified: "false" //customer hasn't been notified
      };
 
     }
