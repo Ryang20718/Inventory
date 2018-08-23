@@ -818,7 +818,7 @@ function newCustomer(receiver, message) {
         from   : 'info@vesselbags.com',
         html   : 'New Customer is interested in ' + message,
         subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
-        to     : 'info@vesselbags.com'
+        to     : 'ryanzonson@gmail.com'
     }, function (err, info) {
         if (err) {
             console.error(err);
