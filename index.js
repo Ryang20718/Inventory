@@ -23,7 +23,7 @@ const app = express();
 const shopifyApiPublicKey = process.env.SHOPIFY_API_PUBLIC_KEY;
 const shopifyApiSecretKey = process.env.SHOPIFY_API_SECRET_KEY;
 const scopes = 'write_products';
-const appUrl = 'https://50aec6e3.ngrok.io';
+const appUrl = 'https://e6e7dd12.ngrok.io';
 
 //body parser
 app.use(bodyParser.urlencoded({ extended: false })) 
@@ -106,7 +106,7 @@ app.get('/shopify/callback', async (req, res) => {
     const { access_token } = tokenResponse.data
 
     const shopData = await fetchShopData(shop, access_token)
-    console.log(shopData.data.shop);
+    
     res.send(shopData.data.shop)
 
   } catch(err) {
@@ -818,7 +818,7 @@ function newCustomer(receiver, message) {
         from   : 'info@vesselbags.com',
         html   : 'New Customer is interested in ' + message,
         subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
-        to     : 'info@vesselbags.com'
+        to     : 'ryanzonson@gmail.com'
     }, function (err, info) {
         if (err) {
             console.error(err);
