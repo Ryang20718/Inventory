@@ -881,7 +881,7 @@ function newCustomer(receiver, message) {
 
     transport.sendMail({
         from   : 'info@vesselbags.com',
-        html   : 'New Customer is interested in ' + message + " Link to SpreadSheet https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing",
+        html   : 'New Customer is interested in ' + message + ".                                                                                           Link to SpreadSheet https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing",
         subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
         to     : 'ryanzonson@gmail.com'//update
     }, function (err, info) {
@@ -892,7 +892,6 @@ function newCustomer(receiver, message) {
         }
     });
 }
-
 
 ///CHRON FUNCTION that sends emails every day
 var schedule = require('node-schedule');
@@ -934,3 +933,5 @@ app.post('/signup', cors(), function (req, res) {
     return console.log(error);
   });
 });
+
+
