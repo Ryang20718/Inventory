@@ -163,7 +163,7 @@ app.post('/cleanSheets', cors(), function(req, res){//shows all customers email 
 
 //shopify cleans results to firebase cloudstore
 app.post('/updateSpreadSheet', cors(), function(req, res){
-    authorize(content,appendData);
+    authorize(content,autoAppend);
   res.send("PreOrder SpreadSheet updated successfully")
 });
 
@@ -757,7 +757,7 @@ for(var i = 0; i < array.length; i++){
   var tempValue = [];
   for(var ind = 0; ind < emailArray.length; ind++){
     for(var ind2 = 0; ind2 < emailArray[ind].length; ind2++){// if email array contains an array
-        tempValue.push([emailArray[ind][ind2], pURLArray[ind], variantIDArray[ind],today]);
+        tempValue.push([emailArray[ind][ind2], pURLArray[ind], variantIDArray[ind],today,"No"]);
         }
   }
   sheets.spreadsheets.values.append({
@@ -779,7 +779,6 @@ for(var i = 0; i < array.length; i++){
   
  
 }
-
 
 
 async function readAllCustomers(auth) {//reads all customers from google sheet
