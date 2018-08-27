@@ -170,7 +170,7 @@ app.post('/updateSpreadSheet', cors(), function(req, res){
 app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new customer to firebase
     newCustomer(req.body.email,req.body.url);
     writePreOrderCustomer(req.body.email,req.body.url,req.body.variantID);
-    authorize(content,appendData);//automatically adds customer to spreadsheet
+    authorize(content,autoAppend);//automatically adds customer to spreadsheet
   res.send("Added Successfully");
 });
 
@@ -713,7 +713,72 @@ for(var i = 0; i < array.length; i++){
   
   
 }
+//Appends Data to SpreadSHeet Automatically
+async function autoAppend(auth) {//appends data from firebase to spreadsheet
+    
+//Get current date
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
 
+if(dd<10) {
+    dd = '0'+dd
+} 
+
+if(mm<10) {
+    mm = '0'+mm
+} 
+
+today = mm + '/' + dd + '/' + yyyy;//current date 
+  //first get Data from firebase
+var array = await readPreOrderCustomer();// array will be empty if customers have already have been updated
+if(array.length == 0){
+    return; // no data needs to be written
+}
+
+var emailArray = [];
+var pURLArray = [];
+var variantIDArray = [];
+    
+for(var i = 0; i < array.length; i++){
+    if(array[i].email.constructor === Array){// it is an array
+    emailArray.push(array[i].email); //stores an array inside array if need be
+    }else{
+        var temp = [];
+        temp.push(array[i].email);
+        emailArray.push(temp);
+    }
+    pURLArray.push(array[i].productURL);
+    variantIDArray.push(array[i].vid);
+}        
+  
+  var sheets = google.sheets('v4');
+  var tempValue = [];
+  for(var ind = 0; ind < emailArray.length; ind++){
+    for(var ind2 = 0; ind2 < emailArray[ind].length; ind2++){// if email array contains an array
+        tempValue.push([emailArray[ind][ind2], pURLArray[ind], variantIDArray[ind],today]);
+        }
+  }
+  sheets.spreadsheets.values.append({
+    auth: auth,
+    spreadsheetId: '1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk',
+    range: 'Sheet1', //Change Sheet1 if your worksheet's name is something else
+    valueInputOption: "USER_ENTERED",
+    resource: {
+     values: tempValue
+    }
+  }, (err, response) => {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    } else {
+        console.log("Appended");
+    }
+  });
+  
+ 
+}
 
 
 
