@@ -859,7 +859,7 @@ function vesselMandrill(receiver, message) {
     transport.sendMail({
         from   : 'info@vesselbags.com',
         html   : message,
-        subject: 'Vessel Products That Require ETA Messages',
+        subject: 'Vessel Products That Require ETA Messages https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing',//link to spreadsheet
         to     : receiver
     }, function (err, info) {
         if (err) {
@@ -881,7 +881,7 @@ function newCustomer(receiver, message) {
 
     transport.sendMail({
         from   : 'info@vesselbags.com',
-        html   : 'New Customer is interested in ' + message,
+        html   : 'New Customer is interested in ' + message + " Link to SpreadSheet https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing",
         subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
         to     : 'ryanzonson@gmail.com'//update
     }, function (err, info) {
