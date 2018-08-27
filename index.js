@@ -169,7 +169,8 @@ app.post('/updateSpreadSheet', cors(), function(req, res){
 
 app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new customer to firebase
     newCustomer(req.body.email,req.body.url);
-    writePreOrderCustomer(req.body.email,req.body.url,req.body.variantID)
+    writePreOrderCustomer(req.body.email,req.body.url,req.body.variantID);
+    authorize(content,appendData);//automatically adds customer to spreadsheet
   res.send("Added Successfully");
 });
 
