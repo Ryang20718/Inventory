@@ -892,7 +892,7 @@ var htmlToSend = template(replacements);
         from   : 'info@vesselbags.com',
         html   : htmlToSend,
         subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
-        to     : 'ryanzonson@gmail.com'//update
+        to     : 'info@vesselbags.com'//update
     }, function (err, info) {
         if (err) {
             console.error(err);
