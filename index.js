@@ -871,6 +871,15 @@ function vesselMandrill(receiver, message) {
 }
 
 function newCustomer(receiver, message) {
+var fs = require('fs'); //Filesystem    
+var handlebars = require('handlebars');
+var content = fs.readFileSync("./emailTemplate/newCustomer.html","utf-8");
+var template = handlebars.compile(content);
+var replacements = {
+    customer:receiver,
+    text:message
+}; 
+var htmlToSend = template(replacements);    
     
     
     var transport = nodemailer.createTransport(mandrillTransport({
@@ -881,7 +890,7 @@ function newCustomer(receiver, message) {
 
     transport.sendMail({
         from   : 'info@vesselbags.com',
-        html   : 'New Customer is interested in ' + message + ".                                                                                           Link to SpreadSheet https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing",
+        html   : htmlToSend,
         subject: 'New Customer ' + receiver +  ' signed up for a pre-order product notification',
         to     : 'ryanzonson@gmail.com'//update
     }, function (err, info) {
@@ -892,7 +901,6 @@ function newCustomer(receiver, message) {
         }
     });
 }
-
 ///CHRON FUNCTION that sends emails every day
 var schedule = require('node-schedule');
  
