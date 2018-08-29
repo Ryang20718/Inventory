@@ -593,7 +593,7 @@ async function deleteNotifiedCustomer(){
     pRef.get()//asynch
     .then(snapshot => {
       snapshot.forEach(doc => {
-          if(doc.data().notified == true){//customer was notified
+          if(doc.data().notified == "true"){//customer was notified
               pRef.doc(doc.id).delete();
           }
       });
