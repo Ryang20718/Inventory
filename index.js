@@ -363,7 +363,7 @@ var getDoc = vRef.get()
       console.log('Error getting document', err);
     });    
 }
-updateVariantETA("644721442876","7824897572924");
+
 
 async function setAllAvailableFalse(){//sets all available to true after messaging
 var vRef = db.collection(fireStoreCollection);
