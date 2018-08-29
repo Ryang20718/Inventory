@@ -174,6 +174,11 @@ app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new cust
   res.send("Added Successfully");
 });
 
+app.post('/blankETA', cors(), function(req, res){//posts new customer to firebase
+    requireETA(req.body.product);
+});
+
+
 
 app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out of stock products to firebase
   autoAddVariant(req.body.prodID,req.body.varID,req.body.inventory,req.body.title);    
@@ -861,6 +866,30 @@ function vesselMandrill(receiver, message) {
         html   : message,
         subject: 'Vessel Products That Require ETA Messages https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing',//link to spreadsheet
         to     : receiver
+    }, function (err, info) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(info);
+        }
+    });
+}
+
+////////////////Function for mailer/////////////
+function requireETA(message) {
+    
+    
+    var transport = nodemailer.createTransport(mandrillTransport({
+        auth: {
+            apiKey: process.env.MANDRILL_API
+        }
+    }));
+
+    transport.sendMail({
+        from   : 'info@vesselbags.com',
+        html   : message,
+        subject: 'Vessel Products That Require ETA Messages',//link to spreadsheet
+        to     : "info@vesselbags.com"
     }, function (err, info) {
         if (err) {
             console.error(err);
