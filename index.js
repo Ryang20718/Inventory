@@ -284,12 +284,13 @@ var getDoc = vRef.get()
         var obj = {//object that will be inside the array
             pid: doc.data().pid,
             vid: doc.data().vid,
-            msg: "",//blank so then we can email vessel to let them know
+            msg: doc.data().msg,//blank so then we can email vessel to let them know
             qty: doc.data().qty,
             available: doc.data().available,
             name: doc.data().name,
         };
           obj.available.push(false);
+          obj.msg.push(false);
           obj.vid.push(varID);
           obj.qty.push(inventory);
           obj.name.push(title);
@@ -300,7 +301,7 @@ var getDoc = vRef.get()
     var obj = {//object that will be inside the array
             pid: prodID,
             vid: [varID],
-            msg: "",//blank so then we can email vessel to let them know
+            msg: [false],//blank so then we can email vessel to let them know
             qty: [inventory],
             available: [false],
             name: [title],
