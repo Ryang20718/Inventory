@@ -333,6 +333,37 @@ return new Promise(function(resolve, reject) {
 
 }
 
+//updates product/variant that has a ETA-metafield
+async function updateVariantETA(prodID,varID){
+var vRef = db.collection(fireStoreCollection).doc(prodID);
+var getDoc = vRef.get()
+    .then(doc => {
+      if (doc.exists) {//productID is already there
+        arrayCheck = doc.data().vid;
+        var obj = {//object that will be inside the array
+            pid: doc.data().pid,
+            vid: doc.data().vid,
+            msg: "",//blank so then we can email vessel to let them know
+            qty: doc.data().qty,
+            available: doc.data().available,
+            name: doc.data().name,
+        };
+          //if msg is blank meaning the item was just updated to preORder
+        var index = obj.vid.indexOf(varID);
+        if(obj.msg.length == 0){
+        var msgArray = new Array(obj.vid.length);//declares an array of empty messages
+        msgArray.fill(false,0,obj.vid.length);
+        }        
+        msgArray[index] = true;//sets that product's message to true 
+        obj.msg = msgArray; 
+    db.collection(fireStoreCollection).doc(prodID).set(obj);
+        }
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });    
+}
+updateVariantETA("644721442876","7824897572924");
 
 async function setAllAvailableFalse(){//sets all available to true after messaging
 var vRef = db.collection(fireStoreCollection);
