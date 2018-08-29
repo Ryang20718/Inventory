@@ -174,10 +174,6 @@ app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new cust
   res.send("Added Successfully");
 });
 
-app.post('/blankETA', cors(), function(req, res){//posts new customer to firebase
-    requireETA(req.body.product);
-});
-
 
 
 app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out of stock products to firebase
@@ -528,7 +524,7 @@ getPreOrderCustomers(variantID).then(function(result) {
     email: emptyArray,
     productURL: url,
     vid: variantID,
-    notified: "false" //customer hasn't been notified
+    notified: false //customer hasn't been notified
      };
 
     }
@@ -539,7 +535,7 @@ getPreOrderCustomers(variantID).then(function(result) {
             email: email_array,
             productURL: url,
             vid: variantID,
-            notified: "false" //customer hasn't been notified
+            notified: false//customer hasn't been notified
         };
         
     }
@@ -561,7 +557,7 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
     pRef.get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        if(doc.data().notified == "false"){//customer hasn't been updated to mailchimp
+        if(doc.data().notified == false){//customer hasn't been updated to mailchimp
             var data = {
             email: doc.data().email,
             productURL: doc.data().productURL,
@@ -571,7 +567,7 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
             email: doc.data().email,
             productURL: doc.data().productURL,
             vid: doc.data().vid,
-            notified: "true",
+            notified: true,
             }
             pRef.doc(doc.data().vid).set(updatedData); //updates customers to notified
             preOrderArray.push(data);
@@ -593,7 +589,7 @@ async function deleteNotifiedCustomer(){
     pRef.get()//asynch
     .then(snapshot => {
       snapshot.forEach(doc => {
-          if(doc.data().notified == "true"){//customer was notified
+          if(doc.data().notified == true){//customer was notified
               pRef.doc(doc.id).delete();
           }
       });
@@ -889,7 +885,7 @@ function requireETA(message) {
         from   : 'info@vesselbags.com',
         html   : message,
         subject: 'Vessel Products That Require ETA Messages',//link to spreadsheet
-        to     : "info@vesselbags.com"
+        to     : "ryanzonson@gmail.com"
     }, function (err, info) {
         if (err) {
             console.error(err);
