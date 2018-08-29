@@ -861,7 +861,7 @@ function vesselMandrill(receiver, message) {
         from   : 'info@vesselbags.com',
         html   : message,
         subject: 'Vessel Products That Require ETA Messages https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing',//link to spreadsheet
-        to     : receiver
+        to     : 'ryanzonson@gmail.com'
     }, function (err, info) {
         if (err) {
             console.error(err);
@@ -936,7 +936,7 @@ getVariantRequireMsg().then(function(value) {
     html += "<ul>" + value[i] + "</ul>";
     }
     if(value.length > 0){
-    vesselMandrill("info@vesselbags.com", html);
+    requireETA(html);
     setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
     }
 });  
