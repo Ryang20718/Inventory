@@ -322,8 +322,8 @@ return new Promise(function(resolve, reject) {
     vRef.get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-          for(var i = 0; i < doc.data().available.length; i++){
-            if(doc.data().available[i] == false){// only pushes false available
+          for(var i = 0; i < doc.data().msg.length; i++){
+            if(doc.data().msg[i] == false){// only pushes false available
             resultArray.push(doc.data().name[i]);//need to change to variant name
             }
           }
@@ -347,7 +347,7 @@ var getDoc = vRef.get()
         var obj = {//object that will be inside the array
             pid: doc.data().pid,
             vid: doc.data().vid,
-            msg: "",//blank so then we can email vessel to let them know
+            msg: doc.data().msg,//blank so then we can email vessel to let them know
             qty: doc.data().qty,
             available: doc.data().available,
             name: doc.data().name,
@@ -369,16 +369,16 @@ var getDoc = vRef.get()
 }
 
 
-async function setAllAvailableFalse(){//sets all available to true after messaging
+async function setAllAvailableFalse(){//sets all products' messages to true after messaging
 var vRef = db.collection(fireStoreCollection);
     vRef.get()
     .then(snapshot => {
       snapshot.forEach(doc => {
           var fArray = [];
-          for(var i = 0; i < doc.data().available.length; i++){
-            fArray.push(true);
+          for(var i = 0; i < doc.data().vid.length; i++){
+            fArray.push(false);
           }
-          vRef.doc(doc.id).update({ available: fArray});
+          vRef.doc(doc.id).update({msg: fArray});
       });
     })
     .catch(err => {
@@ -975,7 +975,6 @@ getVariantRequireMsg().then(function(value) {
     }
     if(value.length > 0){
     requireETA(html);
-    setAllAvailableFalse();//sets all pre-order products availability to true so next time email is sent out, there won't be duplicates
     }
 });  
 });
