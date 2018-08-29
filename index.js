@@ -486,8 +486,8 @@ async function removeInStock(prodID,varID){//removess products that are in stock
   if (doc.exists) {//success
     var obj = doc.data(); //sets obj equal to the data obj
     const index = obj.vid.indexOf(varID);//finds index of varID
-    obj.qty[index] = "0";
-    console.log(obj);
+    obj.qty[index] = "1"; //updates the qty
+    query.set(obj);
     }
     }).catch(function(error) {
   console.log("Error getting document:", error);
@@ -599,6 +599,23 @@ async function deleteNotifiedCustomer(){
     });    
 }
 
+
+
+async function updateProductQuantity(prodID,varID){//updates products that are are in stock again
+    var pRef = db.collection(fireStoreCollection);  //collection name
+    var query = pRef.doc(prodID);//query
+    
+    query.get().then(function(doc) {
+  if (doc.exists) {//success
+    var obj = doc.data(); //sets obj equal to the data obj
+    const index = obj.vid.indexOf(varID);//finds index of varID
+    obj.qty[index] = "1"; //updates the qty
+    query.set(obj);
+    }
+    }).catch(function(error) {
+  console.log("Error getting document:", error);
+    });    
+}
 
 ////////google spreadsheet functions///////
 
@@ -806,6 +823,7 @@ async function readAllCustomers(auth) {//reads all customers from google sheet
     return(result_array); //returns an json of spreadsheet
 }
 
+
 function deleteCustomers(auth) {//reads all customers from google sheet
   const sheets = google.sheets({version: 'v4', auth});
     
@@ -848,32 +866,13 @@ function deleteCustomers(auth) {//reads all customers from google sheet
 }
 
 ////////////////Function for mailer/////////////
-function vesselMandrill(receiver, message) {
-    
-    
-    var transport = nodemailer.createTransport(mandrillTransport({
-        auth: {
-            apiKey: process.env.MANDRILL_API
-        }
-    }));
-
-    transport.sendMail({
-        from   : 'info@vesselbags.com',
-        html   : message,
-        subject: 'Vessel Products That Require ETA Messages https://docs.google.com/spreadsheets/d/1zYG_NnKzf7wvDwXlVu_0STYWSF9w2Y1FoO-Zf1Gwfhk/edit?usp=sharing',//link to spreadsheet
-        to     : 'ryanzonson@gmail.com'
-    }, function (err, info) {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log(info);
-        }
-    });
+function vesselMandrill(receiver, message) {//remove products with inventory
+removeProductsWithInventory();
 }
 
-////////////////Function for mailer/////////////
-function requireETA(message) {
-    
+
+function requireETA(message) {//Product Metafield is blank so remove product from PreOrder List
+
     
     var transport = nodemailer.createTransport(mandrillTransport({
         auth: {
@@ -893,8 +892,12 @@ function requireETA(message) {
             console.log(info);
         }
     });
+
 }
 
+
+
+////////////////Function for mailer/////////////
 function newCustomer(receiver, message) {
 var fs = require('fs'); //Filesystem    
 var handlebars = require('handlebars');
