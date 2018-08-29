@@ -175,7 +175,6 @@ app.post('/updatePreOrderCustomers', cors(), function(req, res){//posts new cust
 });
 
 
-
 app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out of stock products to firebase
   autoAddVariant(req.body.prodID,req.body.varID,req.body.inventory,req.body.title);    
   res.send("Added Successfully");
@@ -550,6 +549,7 @@ async function getPreOrderCustomers(variantID){//
 });
     
 }
+
 
 function writePreOrderCustomer(customer_email,url,variantID){// writes to the database key is variantID
 getPreOrderCustomers(variantID).then(function(result) {
@@ -985,7 +985,7 @@ getVariantRequireMsg().then(function(value) {
 
 //chron for deleting all customers who have been notified
 schedule.scheduleJob('* 3 * * *', function(){//executes task once an hour
-deleteNotifiedCustomer();
+//deleteNotifiedCustomer();
 });
 
 
