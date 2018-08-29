@@ -182,6 +182,10 @@ app.post('/autoAddPreOrderProducts', cors(), function(req, res){//posts all out 
 });
 
 
+app.post('/updateMetafield', cors(), function(req, res){//posts all out of stock products to firebase
+  updateVariantETA(req.body.prodID,req.body.varID);
+});
+
 app.post('/cartCheckMsg', cors(), function(req, res){//posts all out of stock products to firebase
   remindMsg(req.body.prodID,req.body.varID);    
   res.send("Updated Successfully");
