@@ -950,6 +950,7 @@ getVariantRequireMsg().then(function(value) {
 //chron for deleting all customers who have been notified
 schedule.scheduleJob('* 3 * * *', function(){//executes task once an hour
 deleteNotifiedCustomer();
+setAllAvailableFalse();
 });
 
 
