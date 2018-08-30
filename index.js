@@ -636,7 +636,6 @@ async function deleteNotifiedCustomer(){
 }
 
 
-
 async function updateProductQuantity(prodID,varID){//updates products that are are in stock again
     var pRef = db.collection(fireStoreCollection);  //collection name
     var query = pRef.doc(prodID);//query
@@ -969,8 +968,7 @@ var htmlToSend = template(replacements);
 var schedule = require('node-schedule');
 
 var j = schedule.scheduleJob('* * * * 3', function(){//executes task once a week
-    console.log("ERROR");
-    /*
+    console.log("sending a email");
 getVariantRequireMsg().then(function(value) {
     var html = "";
     for(var i = 0; i < value.length; i++){
@@ -979,7 +977,7 @@ getVariantRequireMsg().then(function(value) {
     if(value.length > 0){
     requireETA(html);
     }
-});  */
+});  
 });
 
 
