@@ -200,7 +200,6 @@ checkOutOfStock(prodID).then(function(value) {
 
 app.post('/removeInStock', cors(), function(req, res){//posts all out of stock products to firebase
   removeInStock(req.body.prodID,req.body.varID); 
-  removeProductsWithInventory();
   res.send("Updated Successfully");
 });
 
@@ -513,6 +512,7 @@ async function removeProductsWithInventory(){//completely wipes out out all of t
 
 
 
+
 async function removeInStock(prodID,varID){//removess products that are in stock only if the inventory_quantity is greater than 0
     var pRef = db.collection(fireStoreCollection);  //collection name
     var query = pRef.doc(prodID);//query
@@ -523,6 +523,7 @@ async function removeInStock(prodID,varID){//removess products that are in stock
     const index = obj.vid.indexOf(varID);//finds index of varID
     obj.qty[index] = "1"; //updates the qty
     query.set(obj);
+    removeProductsWithInventory();
     }
     }).catch(function(error) {
   console.log("Error getting document:", error);
