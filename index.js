@@ -495,6 +495,7 @@ async function removeProductsWithInventory(){//completely wipes out out all of t
              obj.available.splice(i, 1);
              obj.vid.splice(i, 1);
              obj.qty.splice(i, 1);
+             obj.msg.splice(i, 1);
              vRef.doc(doc.id).set(obj);
              if(i == 0 && doc.data().qty.length == 1){
                 vRef.doc(doc.id).delete();
@@ -1011,12 +1012,27 @@ app.post('/signup', cors(), function (req, res) {
 
 
 /////FUNCTION FOR GRAPHS TO DISPLAY//////
-app.get('/displayOutOfStock', cors(), function(req, res){//shows all customers email on spreadsheet
-
-});
-
 
 app.get('/displayCustomersInterest', cors(), function(req, res){//shows all customers email on spreadsheet
+  var email_array = [];
+  var name_array = [];
+  var finalArray = [];
+var vRef = db.collection(NotifyPreOrder);
 
+return new Promise(function(resolve, reject) {
+    vRef.get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+          name_array.push(doc.data().productURL);
+          email_array.push(doc.data().email.length);//number of customers signed up
+      });
+        finalArray.push(name_array);
+        finalArray.push(email_array);
+        res.send(finalArray);
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+});
 });
 
