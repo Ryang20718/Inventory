@@ -920,7 +920,7 @@ function requireETA(message) {//Product Metafield is blank so remove product fro
         from   : 'info@vesselbags.com',
         html   : message,
         subject: 'Vessel Products That Require ETA Messages',//link to spreadsheet
-        to     : "ryanzonson@gmail.com"
+        to     : "info@vesselbags.com"
     }, function (err, info) {
         if (err) {
             console.error(err);
@@ -1006,4 +1006,17 @@ app.post('/signup', cors(), function (req, res) {
   });
 });
 
+
+
+
+
+/////FUNCTION FOR GRAPHS TO DISPLAY//////
+app.get('/displayOutOfStock', cors(), function(req, res){//shows all customers email on spreadsheet
+
+});
+
+
+app.get('/displayCustomersInterest', cors(), function(req, res){//shows all customers email on spreadsheet
+
+});
 
