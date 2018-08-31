@@ -52,9 +52,9 @@
   </div>
 </div>
     
-    
+ <canvas id="myChart"></canvas>   
 <script>
-<canvas id="myChart"></canvas>
+
 function getPreOrder(){
     return $.ajax({
      url: "https://inventory-shop-oauth.herokuapp.com/displayCustomersInterest",
@@ -65,7 +65,7 @@ function handleData(data) {
 //data contains 2 arrays, first is the names, second is quantities
 var ctx = document.getElementById('myChart').getContext('2d');
 var colors = [ '#2685CB', '#4AD95A', '#FEC81B', '#FD8D14', '#CE00E6', '#4B4AD3', '#FC3026', '#B8CCE3', '#6ADC88', '#FEE45F'  ];
-
+console.log(data[0]);
 var myChart = new Chart(ctx, {
     type: 'pie',
     data: {
