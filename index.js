@@ -70,6 +70,13 @@ app//homepage
   .get('/', (req, res) => res.render('pages/index'))
 
 
+app//homepage
+  .use(express.static(path.join(__dirname, 'public')))
+  .set('views', path.join(__dirname, 'views'))
+  .set('view engine', 'ejs')
+  .get('/getCharts', (req, res) => res.render('pages/charts'))
+
+
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop;
 
