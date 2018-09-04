@@ -928,7 +928,7 @@ function requireETA(message) {//Product Metafield is blank so remove product fro
         from   : 'info@vesselbags.com',
         html   : message,
         subject: 'Vessel Products That Require ETA Messages',//link to spreadsheet
-        to     : "info@vesselbags.com"
+        to     : "ryanzonson@gmail.com"
     }, function (err, info) {
         if (err) {
             console.error(err);
