@@ -559,8 +559,28 @@ async function getPreOrderCustomers(variantID){//
     
 }
 
+async function getPreOrderNotified(variantID){// 
+    var pRef = db.collection(NotifyPreOrder);  //collection name
+    var allCustomers = await pRef.doc(variantID);
+    
+    return new Promise(function(resolve, reject) {//promise 
+    allCustomers.get().then(function(doc) {
+  if (doc.exists) {//success
+      resolve(doc.data().notified);
+  } else {// variant ID is not in system
+    console.log("No such notified in the current Database!");
+    resolve(undefined);
+    }
+    }).catch(function(error) {
+  console.log("Error getting document:", error);
+    });
+});
+    
+}
+
 
 function writePreOrderCustomer(customer_email,url,variantID){// writes to the database key is variantID
+
 getPreOrderCustomers(variantID).then(function(result) {
     if(result == undefined){//variant is not in system
         var emptyArray = [];
@@ -569,20 +589,26 @@ getPreOrderCustomers(variantID).then(function(result) {
     email: emptyArray,
     productURL: url,
     vid: variantID,
-    notified: false //customer hasn't been notified
+    notified: [false] //customer hasn't been notified
      };
 
     }
     else{//success and email_array contains all the emails
+    getPreOrderNotified(variantID).then(function(notifyArray) {
         var email_array = result;
+        var notify_array = notifyArray;
+        notify_array.push(false);
         email_array.push(customer_email);//add current customer email to email list
          var data = {
             email: email_array,
             productURL: url,
             vid: variantID,
-            notified: false//customer hasn't been notified
+            notified: notify_array//customer hasn't been notified
         };
-        
+    
+    }).catch(function(error) {
+    console.log("Error getting document:", error);
+    });
     }
             // Add a new document in collection 
     var setDoc = db.collection(NotifyPreOrder).doc(variantID).set(data);
@@ -602,22 +628,20 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
     pRef.get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        if(doc.data().notified == false){//customer hasn't been updated to mailchimp
-            var data = {
+        var notify_array = doc.data().notified;
+        for(var index = 0; index < doc.data().notified.length;index++){
+        if(doc.data().notified[index] == false){//customer hasn't been updated to mailchimp
+        var data = {
             email: doc.data().email,
             productURL: doc.data().productURL,
             vid: doc.data().vid
         };
-            var updatedData = {// set notified to true
-            email: doc.data().email,
-            productURL: doc.data().productURL,
-            vid: doc.data().vid,
-            notified: true,
-            }
-            pRef.doc(doc.data().vid).set(updatedData); //updates customers to notified
-            preOrderArray.push(data);
+        notify_array[index] = true;//updates index with true
+        pRef.doc(doc.data().vid).update({notified: notify_array});
+        preOrderArray.push(data);
         }else{//customer has been updated to mailchimp
             console.log("customers have been updated to mailchimp already");
+        }   
         }
       });
     resolve(Promise.all(preOrderArray));
@@ -628,6 +652,7 @@ async function readPreOrderCustomer(){//google firebase get all customer data to
 });
     return finalArray;//array of objects
 }
+
 
 async function deleteNotifiedCustomer(){
     var pRef = db.collection(NotifyPreOrder);  //collection name
