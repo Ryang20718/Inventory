@@ -1009,7 +1009,7 @@ getVariantRequireMsg().then(function(value) {
     html += "<ul>" + value[i] + "</ul>";
     }
     if(value.length > 0){
-    requireETA(html);
+    //requireETA(html);
     }
 });  
 });
