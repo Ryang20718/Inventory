@@ -1000,7 +1000,7 @@ var htmlToSend = template(replacements);
 }
 ///CHRON FUNCTION that sends emails every day
 var schedule = require('node-schedule');
-
+/*
 var j = schedule.scheduleJob('* * * * 3', function(){//executes task once a week
     console.log("sending a email");
 getVariantRequireMsg().then(function(value) {
@@ -1009,9 +1009,10 @@ getVariantRequireMsg().then(function(value) {
     html += "<ul>" + value[i] + "</ul>";
     }
     if(value.length > 0){
-    //requireETA(html);
+    requireETA(html);
     }
 });  
+*/
 });
 
 
